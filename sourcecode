@@ -1,0 +1,266 @@
+import java.util.Random;
+import processing.serial.*;
+
+boolean animation, suma, resta;
+int a,b, res, num1, num2, opcion1, opcion2, opcion3, opcion4, numres, val,tiempo,milis;
+String operando="";
+float i, j;
+int correctas=9;
+boolean inicio=false;
+boolean estadoB1=false;
+boolean estadoB2=false;
+boolean estadoB3=false;
+boolean estadoB4=false;
+Serial myPort;
+Random aleatorio = new Random();
+
+
+void setup() {
+  size(640, 360);
+  //fullScreen();
+  myPort = new Serial(this,Serial.list()[0],9600);
+  i=width/2; j=height/2; a=width; b=height;
+  i=width/2; j=height/2; a=width; b=height;
+  frameRate(500); noStroke(); rectMode(CENTER);
+  reset();
+}
+
+void draw() {
+  myPort.write(8);
+  if (myPort.available()>0){
+   val=0;
+   val=myPort.read();
+  }
+  println(myPort.available()+"   "+val);
+  background(150,251,0);
+  
+  if(animation){
+      if(i<width){
+        fill(255, 204); rect(i, j, i-j*1.3, i-j*1.3); float inverseI = width-i;
+        fill(255, 204); rect(inverseI, j, i-j, i-j);
+        i=i+width/32;
+        //delay(1);
+      }////////////////////////////////////////////////
+     animation=false;
+  }
+  else{
+    if( inicio==false){
+      fill(220,220,220);
+      rect(width/2, height/2+50, 200, 80);
+      fill(0,0,0); textSize(height/6);
+      text("MathHelp",width/2-130,height/2-100);
+      textSize(height/8);
+      text("START",width/2-70, height/2+65);
+    }else{
+      if(correctas<10){
+        milis++;
+        if(milis/1700>1&&correctas<10){
+        milis=milis-1700;
+        tiempo=tiempo+1;
+        }
+        int i=width/2, j=height/2;
+        fill(250,250, 250); rect(width/2, height/2+15, i, i-j-50);
+        rect(width/2,height/2-80,width/2,20);
+        fill(0,0,250);
+        if(correctas>0){
+          rect(width/2-16*(10-correctas),height/2-80,(width/2)-(32*(10-correctas)),20);
+        }
+        
+        fill(0,0,0); textSize(height/5);
+        text(num1,(width/2-width/10)-52,height/2-height/40+40);
+        text(num2,(width/2+width/12)-25,height/2-height/40+40);
+        text(operando,(width/2-width/100)-20,height/2-height/40+40);
+        
+        
+        textSize(height/11);
+        text("progress "+correctas+"/10",width/2-200,height/2-100);
+        text("MathHelp",width-150,30);
+        text(tiempo,30,30);
+        
+        fill(100,100,100);
+        rect(width/2-200, height/2+120, 120,60);
+        rect(width/2-60, height/2+120, 120,60);
+        rect(width/2+85, height/2+120, 120,60);
+        rect(width/2+220, height/2+120, 120,60);
+        
+        if(estadoB1==false){
+           fill(0,0,255); textSize(height/6);
+          text(opcion1,(width/2+width/12)-300,(height/2-height/40)+150);
+        }else{
+          fill(50,51,50); textSize(height/6);
+          text(opcion1,(width/2+width/12)-300,(height/2-height/40)+150);
+        }
+        if(estadoB2==false){
+           fill(0,0,255); textSize(height/6);
+          text(opcion2,(width/2+width/12)-150,(height/2-height/40)+150);
+        }else{
+          fill(50,51,50); textSize(height/6);
+          text(opcion2,(width/2+width/12)-150,(height/2-height/40)+150);
+        }
+        if(estadoB3==false){
+           fill(0,0,255); textSize(height/6);
+          text(opcion3,(width/2+width/12)-18,(height/2-height/40)+150);
+        }else{
+          fill(50,51,50); textSize(height/6);
+          text(opcion3,(width/2+width/12)-18,(height/2-height/40)+150);
+        }
+        if(estadoB4==false){
+           fill(0,0,255); textSize(height/6);
+          text(opcion1,(width/2+width/12)+118,(height/2-height/40)+150);
+        }else{
+          fill(50,51,50); textSize(height/6);
+          text(opcion1,(width/2+width/12)+118,(height/2-height/40)+150);
+        }
+        
+           
+      
+        if(val==1){
+          if (opcion1==res){
+            reset();
+            correctas=correctas+1;
+          }else{
+             estadoB1=true;
+          }
+        }
+        if(val==2){
+          if (opcion2==res){
+            reset();
+            correctas=correctas+1;
+          }else{
+             estadoB2=true;
+          }
+        }
+        if(val==3){
+          if (opcion3==res){
+            reset();
+            correctas=correctas+1;
+          }else{
+             estadoB3=true;
+          }
+        }
+        if(val==4){
+          if (opcion4==res){
+            reset();
+            correctas=correctas+1;
+          }else{
+             estadoB4=true;
+          } 
+        }
+      }else{
+         fill(250,250, 250); rect(width/2, height/2+15, i+40, i-j-50);
+          rect(width/2,height/2-80,width/2,20);
+          fill(0,0,250);
+          if(correctas>0){
+            rect(width/2-16*(10-correctas),height/2-80,(width/2)-(32*(10-correctas)),20);
+          }
+          fill(0,0,0);
+          textSize(height/11);
+          text("progress "+correctas+"/10",width/2-200,height/2-100);
+          textSize(height/13);
+          text("YOU WIN, WITH A TIME OF: ",width/2-176,height/2-height/40+20);
+          text(tiempo+"."+milis%1000+" secconds",width/2-80,height/2-height/40+50);
+          textSize(height/15);
+          text("click any button to start again",width/2-180,height/2-height/40+150);
+          if (myPort.available()>0){
+             correctas=0;
+             reset();
+          }
+         
+      }
+    }
+  }
+  delay(700);
+  milis=milis+700;
+}
+
+void mousePressed(){
+       if(mouseButton==LEFT){
+         inicio=true;
+        }
+        
+        if(mouseButton==RIGHT){
+          inicio=true;
+        }
+        delay(200);
+}
+
+void reset(){
+  estadoB1=false;
+  estadoB2=false;
+  estadoB3=false;
+  estadoB4=false;
+  if(correctas<10){
+    do{
+    num1=aleatorio.nextInt(20)+1;
+    num2=aleatorio.nextInt(20)+1;
+    
+    if (aleatorio.nextInt(2)==1){
+      operando="+";
+      res=num1+num2;
+    } else{
+      operando="-";
+      res=num1-num2;
+    }
+    }while(res<0);
+     numres=aleatorio.nextInt(4);
+     println(numres);
+      if (numres==0){
+        opcion1=res;
+        do{
+        opcion2=(aleatorio.nextInt(40));
+        }while(opcion2==opcion1);
+        do{
+        opcion3=(aleatorio.nextInt(40));
+        }while(opcion3==opcion1);
+        do{
+        opcion4=(aleatorio.nextInt(40));
+        }while(opcion4==opcion1);
+      }
+     if (numres==1){
+       do{
+        opcion1=(aleatorio.nextInt(40));
+        }while(opcion1==opcion2);
+        opcion2=res;
+        do{
+        opcion3=(aleatorio.nextInt(40));
+        }while(opcion3==opcion2);
+        do{
+        opcion4=(aleatorio.nextInt(40));
+        }while(opcion4==opcion2);
+      }
+      if (numres==2){
+       do{
+        opcion1=(aleatorio.nextInt(40));
+        }while(opcion1==opcion3);
+        
+        do{
+        opcion2=(aleatorio.nextInt(40));
+        }while(opcion2==opcion3);
+        
+        opcion3=res;
+        
+        do{
+        opcion4=(aleatorio.nextInt(40));
+        }while(opcion4==opcion3);
+      }
+      
+      if (numres==3){
+       do{
+        opcion1=(aleatorio.nextInt(40));
+        }while(opcion1==opcion4);
+        
+        do{
+        opcion2=(aleatorio.nextInt(40));
+        }while(opcion2==opcion4);
+        
+        do{
+        opcion3=(aleatorio.nextInt(40));
+        }while(opcion3==opcion4);
+        
+        opcion4=res;
+      }
+  }
+  myPort.write(7);
+  delay(500);
+  milis=milis+500;
+}
